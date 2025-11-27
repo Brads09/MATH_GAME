@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Math Battle Arena</title>
+    <link rel="shortcut icon" href="images/number_ninja_icon.png" type="image/x-icon">
+    <link rel="icon" type="image/png" href="images/number-ninja-icon.png">
+    <link rel="apple-touch-icon" href="images/number-ninja-icon.png">
+    <meta name="theme-color" content="#0f172a">
+    <meta property="og:image" content="number-ninja-icon.png">
+    <link rel="stylesheet" href="style.css">
+  </head>
+<body>
+  <header class="topbar">
+    <div class="brand">Group 7 Math Game</div>
+    <nav class="nav">
+      <button data-section="home" class="nav-btn">Home</button>
+      <button data-section="instructions" class="nav-btn">Instructions</button>
+      <button data-section="manage" class="nav-btn">Manage Questions</button>
+    </nav>
+  </header>
+
+  <main>
+    <section id="home" class="screen">
+      <h1 class="title">Math Battle Arena</h1>
+      <p class="subtitle">Practice key concepts from Module 9: Probability with a fast-paced quiz.</p>
+      <div class="segmented" role="tablist" aria-label="Difficulty">
+        <button class="seg-btn selected" data-difficulty="easy" role="tab">Easy</button>
+        <button class="seg-btn" data-difficulty="normal" role="tab">Normal</button>
+        <button class="seg-btn" data-difficulty="hard" role="tab">Hard</button>
+        <button class="seg-btn" data-difficulty="hacker" role="tab">Hacker</button>
+      </div>
+      <div class="cta">
+        <button id="start-btn" class="btn primary">Start Game</button>
+      </div>
+    </section>
+
+    <section id="instructions" class="screen hidden">
+      <div class="section-top">
+        <h2>Game Guide</h2>
+        <button id="close-instructions" class="btn">Close</button>
+      </div>
+      <div class="guide">
+        <h3>Objectives</h3>
+        <ul>
+          <li>Reinforce Module 9 competencies through interactive play.</li>
+          <li>Provide immediate feedback and adaptive difficulty.</li>
+        </ul>
+        <h3>Materials</h3>
+        <ul>
+          <li>Device with a modern browser.</li>
+          <li>Optional projector for whole-class play.</li>
+        </ul>
+        <h3>Mechanics</h3>
+        <ul>
+          <li>Answer multiple-choice questions before the timer ends.</li>
+          <li>Earn points for correct answers; lose a life for wrong ones.</li>
+          <li>Complete all questions or until lives run out.</li>
+        </ul>
+        <h3>Scoring</h3>
+        <ul>
+          <li>+10 points per correct answer.</li>
+          <li>Time bonus added at the end of each question.</li>
+        </ul>
+        <h3>Assessment</h3>
+        <ul>
+          <li>Use the final score and accuracy to gauge mastery.</li>
+          <li>Review missed questions after the game.</li>
+        </ul>
+      </div>
+    </section>
+
+    <section id="play" class="screen hidden">
+      <div class="hud">
+        <div class="hud-item">Score: <span id="score">0</span></div>
+        <div class="hud-item">Lives: <span id="lives">❤❤❤</span></div>
+        <div class="hud-item bomb-container">
+          <div class="bomb">
+            <div class="bomb-body"></div>
+            <div class="bomb-fuse"></div>
+            <div class="spark"></div>
+          </div>
+          <span id="timer" class="bomb-timer">15</span>
+        </div>
+        <div class="hud-actions">
+          <button id="help-btn" class="nav-btn" aria-label="Show Help">?</button>
+          <button id="pause-btn" class="nav-btn" aria-label="Pause">Pause</button>
+        </div>
+      </div>
+        <!-- Combat UI: ninja + enemy -->
+        <div class="combat-stage">
+          <div class="stage-ground"></div>
+          <div class="mountains"></div>
+          <div class="torii"></div>
+          <div class="lantern l1"></div>
+          <div class="lantern l2"></div>
+          <div class="fog"></div>
+          <div id="combat" class="combat">
+            <div class="ninja" id="ninja">
+              <canvas id="ninja-canvas" class="pixel-canvas" aria-label="Ninja"></canvas>
+              <div class="ninja-lives" id="ninja-lives" aria-label="Lives">
+                <span class="life" title="life"></span>
+                <span class="life" title="life"></span>
+                <span class="life" title="life"></span>
+              </div>
+            </div>
+            <div class="enemy" id="enemy">
+              <canvas id="enemy-canvas" class="pixel-canvas" aria-label="Enemy"></canvas>
+            </div>
+          </div>
+        </div>
+      <div class="progress-wrap">
+        <div class="progress">
+          <div id="progress-bar" class="progress-bar"></div>
+        </div>
+        <div class="progress-text">Question <span id="qnum">1</span>/<span id="qtotal">12</span></div>
+      </div>
+      <div id="question" class="question"></div>
+      <div id="choices" class="choices"></div>
+      <div id="explain" class="explain"></div>
+    </section>
+
+    <section id="result" class="screen hidden">
+      <h2>Results</h2>
+      <p>Final Score: <span id="final-score">0</span></p>
+      <p>Accuracy: <span id="accuracy">0%</span></p>
+      <div id="review" class="review"></div>
+      <div class="cta">
+        <button id="restart-btn" class="btn">Play Again</button>
+        <button data-section="home" class="btn nav-btn" aria-label="Go Home">Home</button>
+      </div>
+    </section>
+
+    <section id="manage" class="screen hidden">
+      <div class="section-top">
+        <h2>Manage Questions</h2>
+        <button id="close-manage" class="btn">Close</button>
+      </div>
+      <form id="question-form" class="question-form">
+        <input id="q-text" type="text" placeholder="Question" required>
+        <div class="choice-inputs">
+          <input id="c0" type="text" placeholder="Choice A" required>
+          <input id="c1" type="text" placeholder="Choice B" required>
+          <input id="c2" type="text" placeholder="Choice C" required>
+          <input id="c3" type="text" placeholder="Choice D" required>
+        </div>
+        <label class="answer-label">Correct Choice
+          <select id="answer-index">
+            <option value="0">A</option>
+            <option value="1">B</option>
+            <option value="2">C</option>
+            <option value="3">D</option>
+          </select>
+        </label>
+        <label class="answer-label">Difficulty
+          <select id="diff-select">
+            <option value="easy">Easy</option>
+            <option value="normal" selected>Normal</option>
+            <option value="hard">Hard</option>
+            <option value="hacker">Hacker</option>
+          </select>
+        </label>
+        <button class="btn" type="submit">Add Question</button>
+      </form>
+      <h3>Question Bank</h3>
+      <ul id="question-list" class="question-list"></ul>
+      <div class="cta">
+        <button id="reset-defaults" class="btn">Restore Defaults</button>
+        <button id="clear-all" class="btn danger">Clear All</button>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">© Group 7 Math Game</footer>
+
+  <div id="bomb-explosion" class="bomb-explosion hidden">
+    <div class="explosion-circle"></div>
+    <div class="explosion-debris"></div>
+    <div class="explosion-flash"></div>
+  </div>
+
+  <div id="tutorial" class="modal hidden" role="dialog" aria-modal="true" aria-labelledby="tutorial-title">
+    <div class="modal-content">
+      <h2 id="tutorial-title">How To Play</h2>
+      <ul>
+        <li>Select a difficulty: Easy, Normal, Hard, Hacker.</li>
+        <li>Answer each question before the timer runs out.</li>
+        <li>Correct answers award points plus time bonus; wrong answers cost a life.</li>
+        <li>Streaks earn bonus points; review missed items after the game.</li>
+      </ul>
+      <button id="close-tutorial" class="btn primary" aria-label="Close Tutorial">Got it</button>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
